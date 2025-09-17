@@ -6,17 +6,34 @@ from dotenv import load_dotenv
 def probar_conexion():
     """Prueba la conexión a la base de datos MySQL"""
     try:
-        # Cargar variables de entorno
-        load_dotenv()
+        # Verificar la existencia del archivo .env
+        env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
+        print(f"\nBuscando archivo .env en: {env_path}")
+        if os.path.exists(env_path):
+            print("Archivo .env encontrado")
+            # Cargar variables de entorno desde la ubicación específica
+            load_dotenv(env_path)
+        else:
+            print("¡ADVERTENCIA! Archivo .env no encontrado")
+        
+        # Imprimir información de diagnóstico
+        print("\nVariables de entorno cargadas:")
+        print(f"DBHOST: {os.getenv('DBHOST', 'no definido')}")
+        print(f"DBPORT: {os.getenv('DBPORT', 'no definido')}")
+        print(f"DBUSER: {os.getenv('DBUSER', 'no definido')}")
+        print(f"DBDATABASE_NAME: {os.getenv('DBDATABASE_NAME', 'no definido')}")
         
         # Intentar establecer la conexión
         print("Intentando conectar a la base de datos...")
         connection = mysql.connector.connect(
-            host=os.getenv('DBHOST'),
-            user=os.getenv('DBUSER'),
-            password=os.getenv('DBPASSWORD'),
-            port=os.getenv('DBPORT'),
-            database=os.getenv('DBDATABASE_NAME')
+            host=os.getenv('DBHOST', 'localhost'),
+            user=os.getenv('DBUSER', 'root'),
+            password=os.getenv('DBPASSWORD', ''),
+            port=int(os.getenv('DBPORT', '3306')),
+            database=os.getenv('DBDATABASE_NAME', 'railway'),
+            connect_timeout=60,
+            autocommit=True,
+            buffered=True
         )
         
         if connection.is_connected():

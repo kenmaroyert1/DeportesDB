@@ -1,6 +1,7 @@
 import os
 import mysql.connector
 import time
+import pandas as pd
 from Config.ConfigDB import ConfigDB
 
 class LoadDB:
